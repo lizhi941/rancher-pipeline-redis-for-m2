@@ -1,0 +1,35 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: cache-redis-service
+spec:
+  selector:
+    app: cache-redis
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-redis
+  labels:
+    app: cache-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache-redis
+  template:
+    metadata:
+      labels:
+        app: cache-redis
+      imagePullSecrets:
+      - name: pipeline-docker-registry
+      containers:
+      - name: cache-redis
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        ports:
+        - containerPort: 6379

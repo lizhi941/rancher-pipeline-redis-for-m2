@@ -1,0 +1,11 @@
+stages:
+- name: Publish image
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./3.2.12-stretch-redis/Dockerfile
+      buildContext: ./3.2.12-stretch-redis
+      tag: php-fpm:${CICD_EXECUTION_SEQUENCE}
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deploy/deployment.yaml
